@@ -1,0 +1,5 @@
+[03-Jul-2025 21:39:27 Europe/Berlin] 📧 Email helper functions loaded successfully (renamed versions)
+[03-Jul-2025 21:39:27 Europe/Berlin] PHP Warning:  Undefined array key "drug" in C:\xampp\htdocs\prescription_system\config\email_helper.php on line 71
+[03-Jul-2025 21:39:27 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\prescription_system\config\email_helper.php on line 71
+[03-Jul-2025 21:39:33 Europe/Berlin] ✅ Email sent successfully to: sameerajayakodi456@gmail.com from: sameerajayakodi456@gmail.com
+[03-Jul-2025 21:39:33 Europe/Berlin] Test log entry at 2025-07-03 21:39:33
