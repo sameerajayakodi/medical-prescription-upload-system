@@ -53,138 +53,169 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration - PrescriptionSystem</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>User Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    .registration-container {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        padding: 40px;
-        max-width: 600px;
-        width: 100%;
+    .material-icons {
+        font-size: 20px;
     }
 
-    .btn-custom {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        border: none;
-        padding: 12px 30px;
-        border-radius: 25px;
-        color: white;
-        font-weight: bold;
-        width: 100%;
+    .large-icon {
+        font-size: 12rem;
     }
 
-    .btn-custom:hover {
-        background: linear-gradient(45deg, #764ba2, #667eea);
-        color: white;
+    input:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .form-control {
-        border-radius: 10px;
-        border: 2px solid #eee;
-        padding: 12px 15px;
+    .btn {
+        transition: all 0.2s ease;
     }
 
-    .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .split-section {
+        height: 100vh;
     }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="registration-container">
-                    <div class="text-center mb-4">
-                        <h2><i class="fas fa-user-plus"></i> User Registration</h2>
-                        <p class="text-muted">Create your account to upload prescriptions</p>
-                    </div>
+<body class="bg-gray-50">
+    <!-- Website Name - Top Left Corner -->
+    <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
 
-                    <?php if ($error): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
-                    </div>
-                    <?php endif; ?>
+        <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
+    </div>
 
-                    <?php if ($success): ?>
-                    <div class="alert alert-success" role="alert">
-                        <i class="fas fa-check-circle"></i> <?php echo $success; ?>
-                    </div>
-                    <?php endif; ?>
+    <!-- Split Screen Content -->
+    <div class="split-section grid grid-cols-1 md:grid-cols-2">
+        <!-- Left Side - Registration Info -->
+        <div class="bg-gra-y text-gray-700 flex items-center justify-center p-8">
+            <div class="text-center max-w-md">
+                <div class="flex justify-center mb-8">
+                    <span class="material-icons large-icon text-blue-300">person_add</span>
+                </div>
+                <h1 class="text-4xl font-bold mb-6 text-gray-800">User Registration</h1>
+                <p class="text-xl text-gray-600">
+                    Create your account to upload prescriptions and get quotes from multiple pharmacies.
+                </p>
+            </div>
+        </div>
 
-                    <form method="POST">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required
-                                    value="<?php echo isset($_POST['name']) ? $_POST['name'] : ''; ?>">
+        <!-- Right Side - Registration Form -->
+        <div class="bg-white flex items-center justify-center p-6">
+            <div class="w-full max-w-lg">
+                <!-- Alerts -->
+                <?php if ($error): ?>
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
+                    <span class="material-icons text-red-600 text-sm">error</span>
+                    <span class="text-red-700 text-sm"><?php echo htmlspecialchars($error); ?></span>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($success): ?>
+                <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-2">
+                    <span class="material-icons text-green-600 text-sm">check_circle</span>
+                    <span class="text-green-700 text-sm"><?php echo htmlspecialchars($success); ?></span>
+                </div>
+                <?php endif; ?>
+
+                <!-- Registration Form -->
+                <div class="bg-white rounded-lg  p-6">
+                    <form method="POST" class="space-y-3">
+                        <!-- Name -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="name" name="name" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email
+                                Address</label>
+                            <input type="email" id="email" name="email" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                        </div>
+
+                        <!-- Address -->
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <textarea id="address" name="address" rows="2" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"><?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?></textarea>
+                        </div>
+
+                        <!-- Contact Number and Date of Birth -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="contact_no" class="block text-sm font-medium text-gray-700 mb-1">Contact
+                                    Number</label>
+                                <input type="tel" id="contact_no" name="contact_no" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                    value="<?php echo isset($_POST['contact_no']) ? htmlspecialchars($_POST['contact_no']) : ''; ?>">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="email" name="email" required
-                                    value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>">
+                            <div>
+                                <label for="date_of_birth" class="block text-sm font-medium text-gray-700 mb-1">Date of
+                                    Birth</label>
+                                <input type="date" id="date_of_birth" name="date_of_birth" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                    value="<?php echo isset($_POST['date_of_birth']) ? htmlspecialchars($_POST['date_of_birth']) : ''; ?>">
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <textarea class="form-control" id="address" name="address" rows="3"
-                                required><?php echo isset($_POST['address']) ? $_POST['address'] : ''; ?></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="contact_no" class="form-label">Contact Number</label>
-                                <input type="tel" class="form-control" id="contact_no" name="contact_no" required
-                                    value="<?php echo isset($_POST['contact_no']) ? $_POST['contact_no'] : ''; ?>">
+                        <!-- Password and Confirm Password -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="password"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" id="password" name="password" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="date_of_birth" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required
-                                    value="<?php echo isset($_POST['date_of_birth']) ? $_POST['date_of_birth'] : ''; ?>">
+                            <div>
+                                <label for="confirm_password"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="confirm_password" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="confirm_password"
-                                    name="confirm_password" required>
-                            </div>
-                        </div>
+                        <!-- Submit Button -->
+                        <div class="pt-4">
+                            <button type="submit"
+                                class="btn block w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-base flex items-center justify-center space-x-2">
 
-                        <div class="mb-3">
-                            <button type="submit" class="btn btn-custom">
-                                <i class="fas fa-user-plus"></i> Register
+                                <span>Register</span>
                             </button>
                         </div>
                     </form>
 
-                    <div class="text-center">
-                        <p class="mb-0">Already have an account? <a href="login.php">Login here</a></p>
-                        <p class="mt-2"><a href="../index.php">Back to Home</a></p>
+                    <!-- Footer Links -->
+                    <div class="text-center mt-4 space-y-2">
+                        <p class="text-sm text-gray-600">
+                            Already have an account?
+                            <a href="login.php" class="text-blue-600 hover:text-blue-700 font-medium">Login here</a>
+                        </p>
+                        <p class="text-sm">
+                            <a href="../index.php" class="text-gray-600 hover:text-gray-700">Back to Home</a>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
