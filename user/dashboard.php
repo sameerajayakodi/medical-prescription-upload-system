@@ -40,221 +40,292 @@ $quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard - PrescriptionSystem</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     body {
-        background-color: #f8f9fa;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px 0;
-        margin-bottom: 30px;
+    .material-icons {
+        font-size: 20px;
     }
 
-    .card {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
+    .large-icon {
+        font-size: 8rem;
     }
 
-    .btn-custom {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 25px;
-        font-weight: bold;
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .btn-custom:hover {
-        background: linear-gradient(45deg, #764ba2, #667eea);
-        color: white;
+    .btn {
+        transition: all 0.2s ease;
     }
 
-    .status-badge {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .main-container {
+        height: 100vh;
+    }
+
+    .table-container-large {
+        height: calc(60vh - 24px);
+        overflow-y: auto;
+    }
+
+    .table-container-small {
+        height: calc(40vh - 24px);
+        overflow-y: auto;
+    }
+
+    .table-container-large::-webkit-scrollbar,
+    .table-container-small::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .table-container-large::-webkit-scrollbar-track,
+    .table-container-small::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .table-container-large::-webkit-scrollbar-thumb,
+    .table-container-small::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
     }
 
     .status-pending {
-        background-color: #ffeaa7;
-        color: #fdcb6e;
+        background-color: #fef3c7;
+        color: #d97706;
     }
 
     .status-quoted {
-        background-color: #74b9ff;
-        color: white;
+        background-color: #dbeafe;
+        color: #2563eb;
     }
 
     .status-accepted {
-        background-color: #00b894;
-        color: white;
+        background-color: #d1fae5;
+        color: #059669;
     }
 
     .status-rejected {
-        background-color: #e17055;
-        color: white;
+        background-color: #fee2e2;
+        color: #dc2626;
     }
     </style>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="../index.php">
-                <i class="fas fa-pills"></i> PrescriptionSystem
-            </a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">Welcome, <?php echo $_SESSION['user_name']; ?>!</span>
-                <a class="nav-link" href="../logout.php">Logout</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="dashboard-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1><i class="fas fa-tachometer-alt"></i> User Dashboard</h1>
-                    <p class="mb-0">Manage your prescriptions and view quotations</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <a href="upload_prescription.php" class="btn btn-light btn-lg">
-                        <i class="fas fa-plus"></i> Upload New Prescription
-                    </a>
-                </div>
-            </div>
-        </div>
+<body class="bg-gray-50">
+    <!-- Website Name - Top Left Corner -->
+    <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
+        <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-prescription"></i> My Prescriptions</h5>
+    <!-- User Profile - Top Right Corner -->
+    <div class="absolute top-6 right-6 z-10 flex items-center space-x-3">
+        <div class="flex items-center space-x-2">
+            <span class="material-icons text-gray-600">account_circle</span>
+            <span class="text-sm text-gray-700">Welcome, <?php echo $_SESSION['user_name']; ?>!</span>
+        </div>
+        <a href="../logout.php" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+            Logout
+        </a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container grid grid-cols-4">
+        <!-- Left Side - Upload Section (1/4 width) -->
+        <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
+            <div class="text-center w-full">
+                <div class="flex justify-center mb-8">
+                    <span class="material-icons large-icon text-blue-300">cloud_upload</span>
+                </div>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Upload Prescription</h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Upload your prescription to get quotes from multiple pharmacies.
+                </p>
+
+                <!-- Upload Button -->
+                <a href="upload_prescription.php"
+                    class="btn block w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg flex items-center justify-center space-x-2">
+                    <span class="material-icons">add</span>
+                    <span>Upload New Prescription</span>
+                </a>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 gap-4 mt-8">
+                    <div class="bg-white p-4 rounded-lg border">
+                        <div class="text-2xl font-bold text-blue-600"><?php echo count($prescriptions); ?></div>
+                        <div class="text-sm text-gray-600">Total Prescriptions</div>
                     </div>
-                    <div class="card-body">
-                        <?php if (empty($prescriptions)): ?>
-                        <div class="text-center py-5">
-                            <i class="fas fa-prescription-bottle fa-3x text-muted mb-3"></i>
-                            <h5>No prescriptions uploaded yet</h5>
-                            <p class="text-muted">Upload your first prescription to get started</p>
-                            <a href="upload_prescription.php" class="btn btn-custom">
-                                <i class="fas fa-plus"></i> Upload Prescription
-                            </a>
-                        </div>
-                        <?php else: ?>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Delivery Address</th>
-                                        <th>Delivery Time</th>
-                                        <th>Status</th>
-                                        <th>Quotations</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($prescriptions as $prescription): ?>
-                                    <tr>
-                                        <td><?php echo date('M d, Y', strtotime($prescription['created_at'])); ?></td>
-                                        <td><?php echo htmlspecialchars($prescription['delivery_address']); ?></td>
-                                        <td><?php echo htmlspecialchars($prescription['delivery_time']); ?></td>
-                                        <td>
-                                            <span class="badge status-<?php echo $prescription['status']; ?>">
-                                                <?php echo ucfirst($prescription['status']); ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info"><?php echo $prescription['quotation_count']; ?>
-                                                Quote(s)</span>
-                                        </td>
-                                        <td>
-                                            <a href="view_prescription.php?id=<?php echo $prescription['id']; ?>"
-                                                class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        <?php endif; ?>
+                    <div class="bg-white p-4 rounded-lg border">
+                        <div class="text-2xl font-bold text-green-600"><?php echo count($quotations); ?></div>
+                        <div class="text-sm text-gray-600">Total Quotations</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <?php if (!empty($quotations)): ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-calculator"></i> Recent Quotations</h5>
+        <!-- Right Side - Tables Section (3/4 width) -->
+        <div class="bg-white col-span-3 flex flex-col p-6 h-screen">
+            <div class="w-full h-full flex flex-col space-y-4">
+                <!-- My Prescriptions Section (60% height) -->
+                <div class="bg-white border border-gray-200 rounded-lg flex flex-col" style="height: 60%;">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+                            <span class="material-icons text-blue-600">receipt</span>
+                            <span>My Prescriptions</span>
+                        </h3>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Pharmacy</th>
-                                        <th>Total Amount</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach (array_slice($quotations, 0, 5) as $quotation): ?>
-                                    <tr>
-                                        <td><?php echo date('M d, Y', strtotime($quotation['created_at'])); ?></td>
-                                        <td><?php echo htmlspecialchars($quotation['pharmacy_name']); ?></td>
-                                        <td>LKR <?php echo number_format($quotation['total_amount'], 2); ?></td>
-                                        <td>
-                                            <span class="badge status-<?php echo $quotation['status']; ?>">
-                                                <?php echo ucfirst($quotation['status']); ?>
-                                            </span>
-                                        </td>
-                                        <td>
+
+                    <?php if (empty($prescriptions)): ?>
+                    <div class="flex-1 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="material-icons text-gray-400" style="font-size: 4rem;">medication</span>
+                            <h5 class="text-xl font-medium text-gray-700 mt-4 mb-2">No prescriptions uploaded yet</h5>
+                            <p class="text-gray-600">Upload your first prescription to get started</p>
+                        </div>
+                    </div>
+                    <?php else: ?>
+                    <div class="table-container-large flex-1">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Date</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Delivery Address
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Delivery Time</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Quotations</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <?php foreach ($prescriptions as $prescription): ?>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        <?php echo date('M d, Y', strtotime($prescription['created_at'])); ?>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        <?php echo htmlspecialchars($prescription['delivery_address']); ?>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        <?php echo htmlspecialchars($prescription['delivery_time']); ?>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span
+                                            class="px-2 py-1 text-xs rounded status-<?php echo $prescription['status']; ?>">
+                                            <?php echo ucfirst($prescription['status']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                                            <?php echo $prescription['quotation_count']; ?> Quote(s)
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <a href="view_prescription.php?id=<?php echo $prescription['id']; ?>"
+                                            class="btn inline-flex items-center space-x-1 px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white rounded text-xs">
+                                            <span class="material-icons" style="font-size: 14px;">visibility</span>
+                                            <span>View</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Recent Quotations Section (40% height) -->
+                <div class="bg-white border border-gray-200 rounded-lg flex flex-col" style="height: 40%;">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+                            <span class="material-icons text-blue-600">calculate</span>
+                            <span>Recent Quotations</span>
+                        </h3>
+                    </div>
+
+                    <?php if (empty($quotations)): ?>
+                    <div class="flex-1 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="material-icons text-gray-400" style="font-size: 3rem;">calculate</span>
+                            <h5 class="text-lg font-medium text-gray-700 mt-4 mb-2">No quotations yet</h5>
+                            <p class="text-gray-600">Quotations will appear here once pharmacies respond</p>
+                        </div>
+                    </div>
+                    <?php else: ?>
+                    <div class="table-container-small flex-1">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Date</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Pharmacy</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Total Amount</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <?php foreach ($quotations as $quotation): ?>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        <?php echo date('M d, Y', strtotime($quotation['created_at'])); ?>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        <?php echo htmlspecialchars($quotation['pharmacy_name']); ?>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm font-semibold text-gray-900">
+                                        LKR <?php echo number_format($quotation['total_amount'], 2); ?>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span
+                                            class="px-2 py-1 text-xs rounded status-<?php echo $quotation['status']; ?>">
+                                            <?php echo ucfirst($quotation['status']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center space-x-2">
                                             <a href="view_quotation.php?id=<?php echo $quotation['id']; ?>"
-                                                class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-eye"></i> View
+                                                class="btn inline-flex items-center space-x-1 px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs">
+                                                <span class="material-icons" style="font-size: 14px;">visibility</span>
+                                                <span>View</span>
                                             </a>
                                             <?php if ($quotation['status'] == 'pending'): ?>
                                             <a href="accept_quotation.php?id=<?php echo $quotation['id']; ?>"
-                                                class="btn btn-sm btn-success ms-1"
+                                                class="btn inline-flex items-center space-x-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs"
                                                 onclick="return confirm('Are you sure you want to accept this quotation?')">
-                                                <i class="fas fa-check"></i> Accept
+                                                <span class="material-icons" style="font-size: 14px;">check</span>
+                                                <span>Accept</span>
                                             </a>
                                             <a href="reject_quotation.php?id=<?php echo $quotation['id']; ?>"
-                                                class="btn btn-sm btn-danger ms-1"
+                                                class="btn inline-flex items-center space-x-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs"
                                                 onclick="return confirm('Are you sure you want to reject this quotation?')">
-                                                <i class="fas fa-times"></i> Reject
+                                                <span class="material-icons" style="font-size: 14px;">close</span>
+                                                <span>Reject</span>
                                             </a>
                                             <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
-        <?php endif; ?>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

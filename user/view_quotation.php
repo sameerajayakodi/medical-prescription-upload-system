@@ -43,209 +43,290 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Quotation - PrescriptionSystem</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     body {
-        background-color: #f8f9fa;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    .card {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
+    .material-icons {
+        font-size: 20px;
     }
 
-    .btn-custom {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 25px;
-        font-weight: bold;
+    .large-icon {
+        font-size: 6rem;
     }
 
-    .btn-custom:hover {
-        background: linear-gradient(45deg, #764ba2, #667eea);
-        color: white;
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .quotation-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 15px;
-        margin-bottom: 30px;
+    .btn {
+        transition: all 0.2s ease;
     }
 
-    .total-amount {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #667eea;
-        text-align: center;
-        padding: 20px;
-        background: #f8f9ff;
-        border-radius: 10px;
-        margin: 20px 0;
-        border: 2px solid #667eea;
-    }
-
-    .status-badge {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
+    .btn:hover {
+        transform: translateY(-1px);
     }
 
     .status-pending {
-        background-color: #ffeaa7;
-        color: #fdcb6e;
+        background-color: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-quoted {
+        background-color: #dbeafe;
+        color: #2563eb;
     }
 
     .status-accepted {
-        background-color: #00b894;
-        color: white;
+        background-color: #d1fae5;
+        color: #059669;
     }
 
     .status-rejected {
-        background-color: #e17055;
-        color: white;
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+
+    .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .table-container::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
     }
     </style>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="../index.php">
-                <i class="fas fa-pills"></i> PrescriptionSystem
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="dashboard.php">Dashboard</a>
-                <span class="navbar-text me-3">Welcome, <?php echo $_SESSION['user_name']; ?>!</span>
-                <a class="nav-link" href="../logout.php">Logout</a>
-            </div>
-        </div>
-    </nav>
+<body class="bg-gray-50">
 
-    <div class="container mt-4">
-        <div class="quotation-header">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1><i class="fas fa-file-invoice-dollar"></i> Quotation Details</h1>
-                    <p class="mb-0">From <?php echo htmlspecialchars($quotation['pharmacy_name']); ?></p>
+
+    <!-- User Profile - Top Right Corner -->
+    <div class="absolute top-6 right-6 z-10 flex items-center space-x-3">
+        <div class="flex items-center space-x-2">
+            <span class="material-icons text-gray-600">account_circle</span>
+            <span class="text-sm text-gray-700">Welcome, <?php echo $_SESSION['user_name']; ?>!</span>
+        </div>
+        <a href="../logout.php" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+            Logout
+        </a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen grid grid-cols-4">
+        <!-- Left Side - Quotation Summary (1/4 width) -->
+        <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
+            <div class="text-center w-full">
+                <div class="flex justify-center mb-8">
+                    <span class="material-icons large-icon text-green-300">receipt_long</span>
                 </div>
-                <div class="col-md-4 text-end">
-                    <span class="badge status-<?php echo $quotation['status']; ?> fs-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Quotation Summary</h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    From <?php echo htmlspecialchars($quotation['pharmacy_name']); ?>
+                </p>
+
+                <!-- Status -->
+                <div class="mb-6">
+                    <span class="px-4 py-2 rounded-full text-sm font-medium status-<?php echo $quotation['status']; ?>">
                         <?php echo ucfirst($quotation['status']); ?>
                     </span>
                 </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-8">
-                <!-- Quotation Items -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-pills"></i> Medicines</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Medicine</th>
-                                        <th>Quantity</th>
-                                        <th>Unit Price</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($quotation_items as $item): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($item['drug_name']); ?></td>
-                                        <td><?php echo $item['quantity']; ?></td>
-                                        <td>LKR <?php echo number_format($item['unit_price'], 2); ?></td>
-                                        <td>LKR <?php echo number_format($item['total_price'], 2); ?></td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Total Amount -->
-                <div class="total-amount">
-                    Total Amount: LKR <?php echo number_format($quotation['total_amount'], 2); ?>
+                <div class="bg-white p-6 rounded-lg border mb-6">
+                    <div class="text-xs text-gray-500 mb-2">Total Amount</div>
+                    <div class="text-3xl font-bold text-blue-600">
+                        LKR <?php echo number_format($quotation['total_amount'], 2); ?>
+                    </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <?php if ($quotation['status'] == 'pending'): ?>
-                <div class="text-center">
+                <div class="space-y-3">
                     <a href="accept_quotation.php?id=<?php echo $quotation['id']; ?>"
-                        class="btn btn-success btn-lg me-3"
+                        class="btn block w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium flex items-center justify-center space-x-2"
                         onclick="return confirm('Are you sure you want to accept this quotation?')">
-                        <i class="fas fa-check"></i> Accept Quotation
+                        <span class="material-icons">check</span>
+                        <span>Accept Quotation</span>
                     </a>
-                    <a href="reject_quotation.php?id=<?php echo $quotation['id']; ?>" class="btn btn-danger btn-lg"
+                    <a href="reject_quotation.php?id=<?php echo $quotation['id']; ?>"
+                        class="btn block w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium flex items-center justify-center space-x-2"
                         onclick="return confirm('Are you sure you want to reject this quotation?')">
-                        <i class="fas fa-times"></i> Reject Quotation
+                        <span class="material-icons">close</span>
+                        <span>Reject Quotation</span>
                     </a>
                 </div>
                 <?php endif; ?>
-            </div>
-
-            <div class="col-md-4">
-                <!-- Pharmacy Information -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-store"></i> Pharmacy Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <h6><?php echo htmlspecialchars($quotation['pharmacy_name']); ?></h6>
-                        <p class="text-muted mb-2">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <?php echo htmlspecialchars($quotation['pharmacy_address']); ?>
-                        </p>
-                        <p class="text-muted mb-2">
-                            <i class="fas fa-phone"></i>
-                            <?php echo htmlspecialchars($quotation['pharmacy_contact']); ?>
-                        </p>
-                        <p class="text-muted mb-0">
-                            <i class="fas fa-calendar"></i>
-                            Quoted on <?php echo date('F d, Y', strtotime($quotation['created_at'])); ?>
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Delivery Information -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-truck"></i> Delivery Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Address:</strong><br>
-                            <?php echo htmlspecialchars($quotation['delivery_address']); ?></p>
-                        <p><strong>Preferred Time:</strong><br>
-                            <?php echo htmlspecialchars($quotation['delivery_time']); ?></p>
-                        <p><strong>Prescription Date:</strong><br>
-                            <?php echo date('F d, Y', strtotime($quotation['prescription_date'])); ?></p>
-                    </div>
-                </div>
 
                 <!-- Back Button -->
-                <div class="d-grid">
-                    <a href="dashboard.php" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <div class="mt-6">
+                    <a href="dashboard.php"
+                        class="btn block w-full px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center justify-center space-x-2">
+                        <span class="material-icons">arrow_back</span>
+                        <span>Back to Dashboard</span>
                     </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 gap-4 mt-8">
+                    <div class="bg-white p-4 rounded-lg border">
+                        <div class="text-2xl font-bold text-blue-600"><?php echo count($quotation_items); ?></div>
+                        <div class="text-sm text-gray-600">Total Items</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border">
+                        <div class="text-xs text-gray-500">Quoted on</div>
+                        <div class="text-sm font-medium text-gray-800">
+                            <?php echo date('M d, Y', strtotime($quotation['created_at'])); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Details Section (3/4 width) -->
+        <div class="bg-white col-span-3 flex flex-col p-6 min-h-screen">
+            <div class="w-full h-full flex flex-col space-y-6">
+                <!-- Quotation Items Section -->
+                <div class="bg-white border border-gray-200 rounded-lg flex flex-col" style="min-height: 50%;">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+                            <span class="material-icons text-blue-600">medication</span>
+                            <span>Medicine Details</span>
+                        </h3>
+                    </div>
+
+                    <div class="table-container flex-1">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Medicine</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Quantity</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Unit Price</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <?php foreach ($quotation_items as $item): ?>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                                        <?php echo htmlspecialchars($item['drug_name']); ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">
+                                        <?php echo $item['quantity']; ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">
+                                        LKR <?php echo number_format($item['unit_price'], 2); ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">
+                                        LKR <?php echo number_format($item['total_price'], 2); ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Information Cards Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Pharmacy Information -->
+                    <div class="bg-white border border-gray-200 rounded-lg">
+                        <div class="p-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
+                                <span class="material-icons text-blue-600">local_pharmacy</span>
+                                <span>Pharmacy Information</span>
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <span class="material-icons text-gray-400 mt-1">store</span>
+                                    <div>
+                                        <div class="font-medium text-gray-900">
+                                            <?php echo htmlspecialchars($quotation['pharmacy_name']); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="material-icons text-gray-400 mt-1">location_on</span>
+                                    <div>
+                                        <div class="text-sm text-gray-600">
+                                            <?php echo htmlspecialchars($quotation['pharmacy_address']); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="material-icons text-gray-400 mt-1">phone</span>
+                                    <div>
+                                        <div class="text-sm text-gray-600">
+                                            <?php echo htmlspecialchars($quotation['pharmacy_contact']); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Information -->
+                    <div class="bg-white border border-gray-200 rounded-lg">
+                        <div class="p-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
+                                <span class="material-icons text-blue-600">local_shipping</span>
+                                <span>Delivery Information</span>
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <span class="material-icons text-gray-400 mt-1">home</span>
+                                    <div>
+                                        <div class="font-medium text-gray-700 text-sm">Delivery Address</div>
+                                        <div class="text-sm text-gray-600">
+                                            <?php echo htmlspecialchars($quotation['delivery_address']); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="material-icons text-gray-400 mt-1">schedule</span>
+                                    <div>
+                                        <div class="font-medium text-gray-700 text-sm">Preferred Time</div>
+                                        <div class="text-sm text-gray-600">
+                                            <?php echo htmlspecialchars($quotation['delivery_time']); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="material-icons text-gray-400 mt-1">event</span>
+                                    <div>
+                                        <div class="font-medium text-gray-700 text-sm">Prescription Date</div>
+                                        <div class="text-sm text-gray-600">
+                                            <?php echo date('M d, Y', strtotime($quotation['prescription_date'])); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

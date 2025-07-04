@@ -109,317 +109,298 @@ for ($hour = 8; $hour <= 22; $hour += 2) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Prescription - PrescriptionSystem</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     body {
-        background-color: #f8f9fa;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    .upload-container {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        padding: 40px;
-        margin: 30px 0;
+    .material-icons {
+        font-size: 20px;
     }
 
-    .btn-custom {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        border: none;
-        color: white;
-        padding: 12px 30px;
-        border-radius: 25px;
-        font-weight: bold;
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .btn-custom:hover {
-        background: linear-gradient(45deg, #764ba2, #667eea);
-        color: white;
+    .btn {
+        transition: all 0.2s ease;
     }
 
-    .form-control {
-        border-radius: 10px;
-        border: 2px solid #eee;
-        padding: 12px 15px;
-    }
-
-    .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    .btn:hover {
+        transform: translateY(-1px);
     }
 
     .file-upload-area {
-        border: 2px dashed #667eea;
-        border-radius: 10px;
-        padding: 40px;
-        text-align: center;
-        background: #f8f9ff;
+        border: 2px dashed #3B82F6;
+        border-radius: 12px;
+        background: #f8faff;
         cursor: pointer;
         transition: all 0.3s ease;
     }
 
     .file-upload-area:hover {
         background: #f0f4ff;
-        border-color: #764ba2;
+        border-color: #2563eb;
     }
 
     .file-upload-area.dragover {
         background: #e6f3ff;
-        border-color: #007bff;
+        border-color: #1d4ed8;
     }
 
-    .preview-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 20px;
-    }
-
-    .preview-item {
-        position: relative;
-        width: 150px;
-        height: 150px;
-        border: 2px solid #ddd;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .preview-item img {
-        width: 100%;
+    /* Ensure no overflow on html and body */
+    html,
+    body {
         height: 100%;
-        object-fit: cover;
-    }
-
-    .remove-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: rgba(255, 0, 0, 0.8);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 25px;
-        height: 25px;
-        font-size: 12px;
-        cursor: pointer;
-    }
-
-    .debug-info {
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
-        padding: 15px;
-        border-radius: 8px;
-        margin: 20px 0;
+        overflow: hidden;
     }
     </style>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="../index.php">
-                <i class="fas fa-pills"></i> PrescriptionSystem
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="dashboard.php">Dashboard</a>
-                <span class="navbar-text me-3">Welcome, <?php echo $_SESSION['user_name']; ?>!</span>
-                <a class="nav-link" href="../logout.php">Logout</a>
+<body class="bg-gray-50 h-full">
+    <!-- Website Name - Top Left Corner -->
+    <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
+        <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
+    </div>
+
+    <!-- User Profile - Top Right Corner -->
+    <div class="absolute top-6 right-6 z-10 flex items-center space-x-4">
+        <a href="dashboard.php" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+            Dashboard
+        </a>
+        <div class="flex items-center space-x-2">
+            <span class="material-icons text-gray-600">account_circle</span>
+            <span class="text-sm text-gray-700">Welcome, <?php echo $_SESSION['user_name']; ?>!</span>
+        </div>
+        <a href="../logout.php" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+            Logout
+        </a>
+    </div>
+
+    <!-- Split Screen Content -->
+    <div class="h-screen grid grid-cols-1 md:grid-cols-2 pt-20 pb-4">
+        <!-- Left Side - Preview Area -->
+        <div class="bg-gray-100 text-gray-700 h-full flex flex-col">
+            <!-- Main Upload Section -->
+            <div class="flex-grow flex items-center justify-center p-6">
+                <div class="text-center max-w-md w-full">
+                    <div class="flex justify-center mb-6">
+                        <span class="material-icons text-blue-400 text-20xl">local_pharmacy</span>
+                    </div>
+                    <h1 class="text-3xl font-bold mb-4 text-gray-800">Upload Prescription</h1>
+                    <p class="text-base text-gray-600 mb-8">
+                        Upload your prescription images and get quotes from multiple pharmacies instantly.
+                    </p>
+
+                    <!-- Upload Stats -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-lg border text-center shadow-sm">
+                            <div class="text-2xl font-bold text-blue-600" id="previewCount">0</div>
+                            <div class="text-sm text-gray-600">Images Selected</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Section at Bottom -->
+            <div class="h-1/3 overflow-y-auto border-t border-gray-300 bg-gray-50 p-4">
+                <h6 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                    <span class="material-icons text-gray-600 mr-2">image</span>
+                    Uploaded Images (<span id="imageCount">0</span>)
+                </h6>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="previewContainer"></div>
             </div>
         </div>
-    </nav>
 
-    <div class="container">
-        <div class="upload-container">
-            <div class="text-center mb-4">
-                <h2><i class="fas fa-upload"></i> Upload Prescription</h2>
-                <p class="text-muted">Upload your prescription images and provide delivery details</p>
-            </div>
+        <!-- Right Side - Form Area -->
+        <div class="bg-white flex items-center justify-center p-6 overflow-y-auto">
+            <div class="w-full max-w-lg">
+                <!-- Alerts -->
+                <?php if ($error): ?>
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
+                    <span class="material-icons text-red-600 text-sm">error</span>
+                    <span class="text-red-700 text-sm"><?php echo htmlspecialchars($error); ?></span>
+                </div>
+                <?php endif; ?>
 
-            <!-- Debug Info -->
-            <div class="debug-info">
-                <h5>📁 Upload Directory Info</h5>
-                <p><strong>Upload Directory:</strong>
-                    <?php echo realpath('uploads/prescriptions/') ?: 'uploads/prescriptions/'; ?></p>
-                <p><strong>Directory Exists:</strong>
-                    <?php echo file_exists('uploads/prescriptions/') ? 'YES' : 'NO'; ?></p>
-                <p><strong>Directory Writable:</strong>
-                    <?php echo is_writable('uploads/prescriptions/') ? 'YES' : 'NO'; ?></p>
-                <p><strong>Max File Size:</strong> <?php echo ini_get('upload_max_filesize'); ?></p>
-                <p><strong>Max Post Size:</strong> <?php echo ini_get('post_max_size'); ?></p>
-            </div>
-
-            <?php if ($error): ?>
-            <div class="alert alert-danger" role="alert">
-                <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
-            </div>
-            <?php endif; ?>
-
-            <?php if ($success): ?>
-            <div class="alert alert-success" role="alert">
-                <i class="fas fa-check-circle"></i> <?php echo $success; ?>
-                <br><a href="dashboard.php" class="alert-link">Go to Dashboard</a>
-                <br><a href="../pharmacy/view_prescription.php?id=<?php echo $prescription_id ?? 'latest'; ?>"
-                    class="alert-link">View in Pharmacy (Test)</a>
-            </div>
-            <?php endif; ?>
-
-            <form method="POST" enctype="multipart/form-data" id="uploadForm">
-                <div class="mb-4">
-                    <label class="form-label">Prescription Images (Max 5 images)</label>
-                    <div class="file-upload-area" id="fileUploadArea">
-                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                        <h5>Drop files here or click to browse</h5>
-                        <p class="text-muted">Supported formats: JPG, PNG, PDF (Max 5MB each)</p>
-                        <input type="file" name="prescription_images[]" id="fileInput" multiple
-                            accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                <?php if ($success): ?>
+                <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-2">
+                    <span class="material-icons text-green-600 text-sm">check_circle</span>
+                    <div class="text-green-700 text-sm">
+                        <?php echo htmlspecialchars($success); ?>
+                        <div class="mt-2">
+                            <a href="dashboard.php" class="text-green-600 hover:text-green-700 font-medium">Go to
+                                Dashboard</a>
+                        </div>
                     </div>
-                    <div class="preview-container" id="previewContainer"></div>
                 </div>
+                <?php endif; ?>
 
-                <div class="mb-3">
-                    <label for="note" class="form-label">Additional Notes (Optional)</label>
-                    <textarea class="form-control" id="note" name="note" rows="3"
-                        placeholder="Any special instructions or notes for the pharmacy"><?php echo isset($_POST['note']) ? $_POST['note'] : ''; ?></textarea>
-                </div>
+                <!-- Form -->
+                <div class="bg-white rounded-lg p-6">
+                    <form method="POST" enctype="multipart/form-data" id="uploadForm" class="space-y-4">
+                        <!-- File Upload Section -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Prescription Images</label>
+                            <div class="file-upload-area p-4 text-center" id="fileUploadArea">
+                                <div class="flex justify-center mb-2">
+                                    <span class="material-icons text-blue-500 text-3xl">add_photo_alternate</span>
+                                </div>
+                                <h5 class="text-base font-medium text-gray-800 mb-1">Drop files here or click to browse
+                                </h5>
+                                <p class="text-xs text-gray-600 mb-1">JPG, PNG, PDF (Max 5MB each)</p>
+                                <p class="text-xs text-gray-500">Maximum 5 images</p>
+                            </div>
+                            <input type="file" name="prescription_images[]" id="fileInput" multiple
+                                accept=".jpg,.jpeg,.png,.pdf" class="hidden">
+                            <div class="text-xs text-gray-600 mt-2">
+                                Selected files: <span id="fileCount">0</span>
+                            </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="delivery_address" class="form-label">Delivery Address</label>
-                    <textarea class="form-control" id="delivery_address" name="delivery_address" rows="3" required
-                        placeholder="Enter your delivery address"><?php echo isset($_POST['delivery_address']) ? $_POST['delivery_address'] : ''; ?></textarea>
-                </div>
+                        <!-- Additional Notes -->
+                        <div>
+                            <label for="note" class="block text-sm font-medium text-gray-700 mb-1">Additional Notes
+                                (Optional)</label>
+                            <textarea id="note" name="note" rows="2"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                placeholder="Any special instructions or notes for the pharmacy"><?php echo isset($_POST['note']) ? htmlspecialchars($_POST['note']) : ''; ?></textarea>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="delivery_time" class="form-label">Preferred Delivery Time</label>
-                    <select class="form-control" id="delivery_time" name="delivery_time" required>
-                        <option value="">Select delivery time slot</option>
-                        <?php foreach ($time_slots as $slot): ?>
-                        <option value="<?php echo $slot; ?>"
-                            <?php echo (isset($_POST['delivery_time']) && $_POST['delivery_time'] == $slot) ? 'selected' : ''; ?>>
-                            <?php echo $slot; ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                        <!-- Delivery Address -->
+                        <div>
+                            <label for="delivery_address" class="block text-sm font-medium text-gray-700 mb-1">Delivery
+                                Address</label>
+                            <textarea id="delivery_address" name="delivery_address" rows="2" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                placeholder="Enter your delivery address"><?php echo isset($_POST['delivery_address']) ? htmlspecialchars($_POST['delivery_address']) : ''; ?></textarea>
+                        </div>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-custom btn-lg">
-                        <i class="fas fa-upload"></i> Upload Prescription
-                    </button>
-                    <a href="dashboard.php" class="btn btn-outline-secondary btn-lg ms-3">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
-                    </a>
+                        <!-- Delivery Time -->
+                        <div>
+                            <label for="delivery_time" class="block text-sm font-medium text-gray-700 mb-1">Preferred
+                                Delivery Time</label>
+                            <select id="delivery_time" name="delivery_time" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                <option value="">Select delivery time slot</option>
+                                <?php foreach ($time_slots as $slot): ?>
+                                <option value="<?php echo $slot; ?>"
+                                    <?php echo (isset($_POST['delivery_time']) && $_POST['delivery_time'] == $slot) ? 'selected' : ''; ?>>
+                                    <?php echo $slot; ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Submit Buttons - Two buttons in one row -->
+                        <div class="pt-4 flex space-x-3">
+                            <button type="submit" id="submitBtn"
+                                class="btn flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm flex items-center justify-center space-x-2">
+                                <span class="material-icons text-sm">cloud_upload</span>
+                                <span>Upload Prescription</span>
+                            </button>
+                            <a href="dashboard.php"
+                                class="btn flex-1 px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium text-sm flex items-center justify-center space-x-2">
+                                <span class="material-icons text-sm">arrow_back</span>
+                                <span>Back to Dashboard</span>
+                            </a>
+                        </div>
+                    </form>
+
+
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    // Simple, working file upload implementation
     const fileInput = document.getElementById('fileInput');
     const fileUploadArea = document.getElementById('fileUploadArea');
     const previewContainer = document.getElementById('previewContainer');
-    let selectedFiles = [];
+    const submitBtn = document.getElementById('submitBtn');
 
-    fileUploadArea.addEventListener('click', () => fileInput.click());
+    // Click to select files
+    fileUploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
 
-    fileUploadArea.addEventListener('dragover', (e) => {
+    // Drag and drop
+    fileUploadArea.addEventListener('dragover', function(e) {
         e.preventDefault();
-        fileUploadArea.classList.add('dragover');
+        this.classList.add('dragover');
     });
 
-    fileUploadArea.addEventListener('dragleave', () => {
-        fileUploadArea.classList.remove('dragover');
-    });
-
-    fileUploadArea.addEventListener('drop', (e) => {
+    fileUploadArea.addEventListener('dragleave', function(e) {
         e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-        handleFiles(e.dataTransfer.files);
+        this.classList.remove('dragover');
     });
 
-    fileInput.addEventListener('change', (e) => {
-        handleFiles(e.target.files);
+    fileUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        updatePreviews();
     });
 
-    function handleFiles(files) {
-        if (selectedFiles.length + files.length > 5) {
-            alert('Maximum 5 files allowed');
+    // File input change
+    fileInput.addEventListener('change', function() {
+        updatePreviews();
+    });
+
+    function updatePreviews() {
+        const files = fileInput.files;
+        previewContainer.innerHTML = '';
+
+        // Update counters
+        document.getElementById('fileCount').textContent = files.length;
+        document.getElementById('previewCount').textContent = files.length;
+        document.getElementById('imageCount').textContent = files.length;
+
+        // Create previews
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const preview = document.createElement('div');
+            preview.className = 'relative w-full h-56 border-2 border-gray-300 overflow-hidden bg-white';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'w-full h-full object-cover';
+                preview.appendChild(img);
+            } else {
+                preview.className += ' flex items-center justify-center bg-gray-100';
+                const icon = document.createElement('span');
+                icon.className = 'material-icons text-red-500 text-6xl';
+                icon.textContent = 'picture_as_pdf';
+                preview.appendChild(icon);
+            }
+
+            previewContainer.appendChild(preview);
+        }
+    }
+
+    // Form validation
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one prescription image.');
             return;
         }
 
-        for (let file of files) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert(`File ${file.name} is too large. Maximum size is 5MB.`);
-                continue;
-            }
-
-            if (!['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'].includes(file.type)) {
-                alert(`File ${file.name} is not supported. Only JPG, PNG, and PDF files are allowed.`);
-                continue;
-            }
-
-            selectedFiles.push(file);
-            createPreview(file);
-        }
-
-        updateFileInput();
-    }
-
-    function createPreview(file) {
-        const previewItem = document.createElement('div');
-        previewItem.className = 'preview-item';
-
-        if (file.type.startsWith('image/')) {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(file);
-            previewItem.appendChild(img);
-        } else {
-            const icon = document.createElement('div');
-            icon.innerHTML = '<i class="fas fa-file-pdf fa-3x text-danger"></i><br>' + file.name;
-            icon.style.display = 'flex';
-            icon.style.flexDirection = 'column';
-            icon.style.justifyContent = 'center';
-            icon.style.alignItems = 'center';
-            icon.style.height = '100%';
-            icon.style.fontSize = '12px';
-            previewItem.appendChild(icon);
-        }
-
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-btn';
-        removeBtn.innerHTML = '×';
-        removeBtn.onclick = () => removeFile(file, previewItem);
-        previewItem.appendChild(removeBtn);
-
-        previewContainer.appendChild(previewItem);
-    }
-
-    function removeFile(file, previewItem) {
-        selectedFiles = selectedFiles.filter(f => f !== file);
-        previewContainer.removeChild(previewItem);
-        updateFileInput();
-    }
-
-    function updateFileInput() {
-        const dt = new DataTransfer();
-        selectedFiles.forEach(file => dt.items.add(file));
-        fileInput.files = dt.files;
-    }
-
-    // Show loading state on form submission
-    document.getElementById('uploadForm').addEventListener('submit', function() {
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        submitBtn.innerHTML =
+            '<span class="material-icons animate-spin">refresh</span><span>Uploading...</span>';
         submitBtn.disabled = true;
-
-        // Re-enable after 10 seconds in case of error
-        setTimeout(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }, 10000);
     });
     </script>
 </body>
