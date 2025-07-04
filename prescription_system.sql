@@ -1,4 +1,4 @@
--- Medical Prescription Upload System Database Schema
+
 
 CREATE DATABASE prescription_system;
 USE prescription_system;
@@ -76,10 +76,3 @@ CREATE TABLE quotation_items (
     FOREIGN KEY (quotation_id) REFERENCES quotations(id) ON DELETE CASCADE
 );
 
--- Insert sample pharmacy user
-INSERT INTO pharmacy_users (pharmacy_name, email, address, contact_no, license_no, password) 
-VALUES ('MediCare Pharmacy', 'pharmacy@medicare.com', '123 Main Street, Colombo', '+94771234567', 'LIC001', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
-
--- Insert sample user
-INSERT INTO users (name, email, address, contact_no, date_of_birth, password) 
-VALUES ('John Doe', 'john@example.com', '456 Oak Avenue, Kandy', '+94777654321', '1990-01-15', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
