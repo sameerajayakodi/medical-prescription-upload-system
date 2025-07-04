@@ -14,7 +14,7 @@ if ($quotation_id <= 0) {
 $database = new Database();
 $conn = $database->getConnection();
 
-// Verify quotation belongs to the user
+
 $stmt = $conn->prepare("
     SELECT q.*, p.user_id, pu.pharmacy_name, pu.email as pharmacy_email
     FROM quotations q 
@@ -32,21 +32,21 @@ if (!$quotation) {
 try {
     $conn->beginTransaction();
     
-    // Update quotation status
+  
     $stmt = $conn->prepare("UPDATE quotations SET status = 'accepted' WHERE id = ?");
     $stmt->execute([$quotation_id]);
     
-    // Update prescription status
+    
     $stmt = $conn->prepare("UPDATE prescriptions SET status = 'accepted' WHERE id = ?");
     $stmt->execute([$quotation['prescription_id']]);
     
-    // Reject other quotations for the same prescription
+   
     $stmt = $conn->prepare("UPDATE quotations SET status = 'rejected' WHERE prescription_id = ? AND id != ?");
     $stmt->execute([$quotation['prescription_id'], $quotation_id]);
     
     $conn->commit();
     
-    // Send email notification to pharmacy
+   
     $email_subject = "Quotation Accepted - " . $_SESSION['user_name'];
     $email_message = "
         <h3>Quotation Accepted</h3>

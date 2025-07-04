@@ -1,5 +1,5 @@
 <?php
-// Database Configuration
+
 class Database {
     private $host = 'localhost';
     private $db_name = 'prescription_system';
@@ -19,12 +19,11 @@ class Database {
     }
 }
 
-// Session management
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Helper functions
+
 function isLoggedIn() {
     return isset($_SESSION['user_id']) || isset($_SESSION['pharmacy_id']);
 }
@@ -46,7 +45,7 @@ function sanitize($data) {
     return htmlspecialchars(strip_tags(trim($data)));
 }
 
-// Email configuration (simple mail function)
+
 function sendEmail($to, $subject, $message) {
     $headers = "From: noreply@prescriptionsystem.com\r\n";
     $headers .= "Reply-To: noreply@prescriptionsystem.com\r\n";
@@ -55,12 +54,12 @@ function sendEmail($to, $subject, $message) {
     return mail($to, $subject, $message, $headers);
 }
 
-// File upload configuration
+
 define('UPLOAD_DIR', 'uploads/prescriptions/');
-define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
+define('MAX_FILE_SIZE', 5 * 1024 * 1024); 
 define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'pdf']);
 
-// Create upload directory if it doesn't exist
+
 if (!file_exists(UPLOAD_DIR)) {
     mkdir(UPLOAD_DIR, 0777, true);
 }

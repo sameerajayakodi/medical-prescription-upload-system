@@ -17,7 +17,7 @@ if ($prescription_id <= 0) {
 $database = new Database();
 $conn = $database->getConnection();
 
-// Get prescription details
+
 $stmt = $conn->prepare("
     SELECT p.*, u.name as user_name, u.contact_no as user_contact
     FROM prescriptions p 
@@ -31,21 +31,19 @@ if (!$prescription) {
     redirect('dashboard.php');
 }
 
-// Get prescription images
+
 $stmt = $conn->prepare("SELECT * FROM prescription_images WHERE prescription_id = ?");
 $stmt->execute([$prescription_id]);
 $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Function to find correct image path
+
 function getImagePath($stored_path) {
-    // The database stores the filename like "6867607891252_1.jpeg"
-    // We need to construct the full path to uploads/prescriptions/
     
-    // Clean the stored path - remove any leading slashes or path separators
+    
+    
     $filename = trim($stored_path, '/\\');
     
-    // Since images are stored in root folder > uploads > prescriptions
-    // and this file is in pharmacy folder, we need to go up one level
+    
     $possible_paths = [
         '../../uploads/prescriptions/' . $filename,
         '../../uploads/prescriptions/' . $filename,
@@ -59,14 +57,14 @@ function getImagePath($stored_path) {
         }
     }
     
-    // Debug: Let's also check what paths we're trying
+    
     error_log("Image not found. Tried paths: " . implode(", ", $possible_paths));
     error_log("Original stored_path: " . $stored_path);
     
     return null;
 }
 
-// Handle quotation submission
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_quotation'])) {
     $drugs = $_POST['drugs'] ?? [];
     $quantities = $_POST['quantities'] ?? [];
@@ -96,19 +94,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_quotation'])) {
             }
         }
         
-        // Delete existing quotation
+       
         $stmt = $conn->prepare("DELETE qi FROM quotation_items qi JOIN quotations q ON qi.quotation_id = q.id WHERE q.prescription_id = ? AND q.pharmacy_id = ?");
         $stmt->execute([$prescription_id, $_SESSION['pharmacy_id']]);
         
         $stmt = $conn->prepare("DELETE FROM quotations WHERE prescription_id = ? AND pharmacy_id = ?");
         $stmt->execute([$prescription_id, $_SESSION['pharmacy_id']]);
         
-        // Insert new quotation
+     
         $stmt = $conn->prepare("INSERT INTO quotations (prescription_id, pharmacy_id, total_amount) VALUES (?, ?, ?)");
         $stmt->execute([$prescription_id, $_SESSION['pharmacy_id'], $total_amount]);
         $quotation_id = $conn->lastInsertId();
         
-        // Insert quotation items
+     
         foreach ($quotation_items as $item) {
             $stmt = $conn->prepare("INSERT INTO quotation_items (quotation_id, drug_name, quantity, unit_price, total_price) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$quotation_id, $item['drug'], $item['quantity'], $item['unit_price'], $item['total_price']]);
@@ -119,7 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_quotation'])) {
         
         $conn->commit();
         
-        // NEW: Send email notification to user
         $emailHandler = new QuotationEmailHandler();
         $emailResult = $emailHandler->sendQuotationEmail($prescription_id, $_SESSION['pharmacy_id']);
         
@@ -135,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_quotation'])) {
     }
 }
 
-// Get existing quotation
+
 $stmt = $conn->prepare("SELECT * FROM quotations WHERE prescription_id = ? AND pharmacy_id = ?");
 $stmt->execute([$prescription_id, $_SESSION['pharmacy_id']]);
 $existing_quotation = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -262,12 +259,12 @@ if ($existing_quotation) {
 </head>
 
 <body class="bg-gray-50">
-    <!-- Website Name - Top Left Corner -->
+
     <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
         <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
     </div>
 
-    <!-- Pharmacy Profile - Top Right Corner -->
+
     <div class="absolute top-6 right-6 z-10 flex items-center space-x-3">
         <div class="flex items-center space-x-2">
             <span class="material-icons text-gray-600">local_pharmacy</span>
@@ -279,7 +276,7 @@ if ($existing_quotation) {
         </a>
     </div>
 
-    <!-- Image Modal -->
+
     <div id="imageModal" class="modal">
         <img id="modalImage" src="" alt="Prescription">
         <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-gray-300">
@@ -287,9 +284,9 @@ if ($existing_quotation) {
         </button>
     </div>
 
-    <!-- Main Container -->
+
     <div class="h-screen grid grid-cols-4">
-        <!-- Left Side - Prescription Summary (1/4 width) -->
+
         <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
             <div class="text-center w-full">
                 <div class="flex justify-center mb-6">
@@ -300,7 +297,7 @@ if ($existing_quotation) {
                     <?php echo htmlspecialchars($prescription['user_name']); ?>
                 </p>
 
-                <!-- Status -->
+
                 <div class="mb-6">
                     <span
                         class="px-4 py-2 rounded-full text-sm font-medium status-<?php echo $prescription['status']; ?>">
@@ -308,7 +305,7 @@ if ($existing_quotation) {
                     </span>
                 </div>
 
-                <!-- Total -->
+
                 <?php if ($existing_quotation): ?>
                 <div class="bg-white p-4 rounded-lg border mb-6">
                     <div class="text-xs text-gray-500 mb-1">Total Amount</div>
@@ -318,14 +315,14 @@ if ($existing_quotation) {
                 </div>
                 <?php endif; ?>
 
-                <!-- Back Button -->
+
                 <a href="dashboard.php"
                     class="btn block w-full px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center justify-center space-x-2">
                     <span class="material-icons">arrow_back</span>
                     <span>Back to Dashboard</span>
                 </a>
 
-                <!-- Stats -->
+
                 <div class="grid grid-cols-2 gap-3 mt-6">
                     <div class="bg-white p-3 rounded-lg border">
                         <div class="text-lg font-bold text-blue-600"><?php echo count($images); ?></div>
@@ -340,9 +337,9 @@ if ($existing_quotation) {
             </div>
         </div>
 
-        <!-- Right Side - Main Content (3/4 width) -->
+
         <div class="bg-white col-span-3 flex flex-col h-screen">
-            <!-- Alerts -->
+
             <?php if ($error): ?>
             <div class="m-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
                 <span class="material-icons text-red-600 text-sm">error</span>
@@ -358,9 +355,9 @@ if ($existing_quotation) {
             <?php endif; ?>
 
             <div class="flex-1 p-6 grid grid-cols-2 gap-6 h-full">
-                <!-- Left Column - Images & Info -->
+
                 <div class="space-y-4">
-                    <!-- Images -->
+
                     <div class="bg-white border border-gray-200 rounded-lg p-4 h-1/2">
                         <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
                             <span class="material-icons text-blue-600">image</span>
@@ -408,7 +405,7 @@ if ($existing_quotation) {
                         <?php endif; ?>
                     </div>
 
-                    <!-- Patient Info -->
+
                     <div class="bg-white border border-gray-200 rounded-lg p-4 h-1/2">
                         <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
                             <span class="material-icons text-blue-600">person</span>
@@ -442,7 +439,7 @@ if ($existing_quotation) {
                     </div>
                 </div>
 
-                <!-- Right Column - Quotation Form -->
+
                 <div class="bg-white border border-gray-200 rounded-lg p-4">
                     <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
                         <span class="material-icons text-blue-600">calculate</span>
@@ -538,7 +535,7 @@ if ($existing_quotation) {
     const addDrugBtn = document.getElementById('addDrug');
     const grandTotalElement = document.getElementById('grandTotal');
 
-    // Image modal functions
+
     function openModal(imageSrc) {
         document.getElementById('modalImage').src = imageSrc;
         document.getElementById('imageModal').classList.add('active');
@@ -548,7 +545,7 @@ if ($existing_quotation) {
         document.getElementById('imageModal').classList.remove('active');
     }
 
-    // Close modal when clicking outside the image
+
     document.getElementById('imageModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeModal();

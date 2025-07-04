@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Validation
+   
     if (empty($name) || empty($email) || empty($address) || empty($contact_no) || empty($date_of_birth) || empty($password)) {
         $error = 'All fields are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -26,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $database = new Database();
         $conn = $database->getConnection();
 
-        // Check if email already exists
+     
         $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         
         if ($stmt->rowCount() > 0) {
             $error = 'Email already registered.';
         } else {
-            // Insert new user
+           
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("INSERT INTO users (name, email, address, contact_no, date_of_birth, password) VALUES (?, ?, ?, ?, ?, ?)");
             
@@ -92,15 +92,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body class="bg-gray-50">
-    <!-- Website Name - Top Left Corner -->
+
     <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
 
         <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
     </div>
 
-    <!-- Split Screen Content -->
+
     <div class="split-section grid grid-cols-1 md:grid-cols-2">
-        <!-- Left Side - Registration Info -->
+
         <div class="bg-gra-y text-gray-700 flex items-center justify-center p-8">
             <div class="text-center max-w-md">
                 <div class="flex justify-center mb-8">
@@ -113,10 +113,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
 
-        <!-- Right Side - Registration Form -->
+
         <div class="bg-white flex items-center justify-center p-6">
             <div class="w-full max-w-lg">
-                <!-- Alerts -->
+
                 <?php if ($error): ?>
                 <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
                     <span class="material-icons text-red-600 text-sm">error</span>
@@ -131,10 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <?php endif; ?>
 
-                <!-- Registration Form -->
                 <div class="bg-white rounded-lg  p-6">
                     <form method="POST" class="space-y-3">
-                        <!-- Name -->
+
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                             <input type="text" id="name" name="name" required
@@ -142,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
                         </div>
 
-                        <!-- Email -->
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email
                                 Address</label>
@@ -151,14 +149,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                         </div>
 
-                        <!-- Address -->
+
                         <div>
                             <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
                             <textarea id="address" name="address" rows="2" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"><?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?></textarea>
                         </div>
 
-                        <!-- Contact Number and Date of Birth -->
+
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label for="contact_no" class="block text-sm font-medium text-gray-700 mb-1">Contact
@@ -176,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <!-- Password and Confirm Password -->
+
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label for="password"
@@ -192,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
+
                         <div class="pt-4">
                             <button type="submit"
                                 class="btn block w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-base flex items-center justify-center space-x-2">
@@ -202,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                     </form>
 
-                    <!-- Footer Links -->
+
                     <div class="text-center mt-4 space-y-2">
                         <p class="text-sm text-gray-600">
                             Already have an account?

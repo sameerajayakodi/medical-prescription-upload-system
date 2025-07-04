@@ -8,7 +8,7 @@ if (!isUser()) {
 $database = new Database();
 $conn = $database->getConnection();
 
-// Get user's prescriptions with quotation count
+
 $stmt = $conn->prepare("
     SELECT p.*, COUNT(q.id) as quotation_count 
     FROM prescriptions p 
@@ -20,7 +20,7 @@ $stmt = $conn->prepare("
 $stmt->execute([$_SESSION['user_id']]);
 $prescriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get user's quotations
+
 $stmt = $conn->prepare("
     SELECT q.*, p.created_at as prescription_date, pu.pharmacy_name 
     FROM quotations q 
@@ -124,12 +124,12 @@ $quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body class="bg-gray-50">
-    <!-- Website Name - Top Left Corner -->
+
     <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
         <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
     </div>
 
-    <!-- User Profile - Top Right Corner -->
+
     <div class="absolute top-6 right-6 z-10 flex items-center space-x-3">
         <div class="flex items-center space-x-2">
             <span class="material-icons text-gray-600">account_circle</span>
@@ -140,9 +140,9 @@ $quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </a>
     </div>
 
-    <!-- Main Container -->
+
     <div class="main-container grid grid-cols-4">
-        <!-- Left Side - Upload Section (1/4 width) -->
+
         <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
             <div class="text-center w-full">
                 <div class="flex justify-center mb-8">
@@ -153,14 +153,14 @@ $quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Upload your prescription to get quotes from multiple pharmacies.
                 </p>
 
-                <!-- Upload Button -->
+
                 <a href="upload_prescription.php"
                     class="btn block w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg flex items-center justify-center space-x-2">
                     <span class="material-icons">add</span>
                     <span>Upload New Prescription</span>
                 </a>
 
-                <!-- Stats -->
+
                 <div class="grid grid-cols-1 gap-4 mt-8">
                     <div class="bg-white p-4 rounded-lg border">
                         <div class="text-2xl font-bold text-blue-600"><?php echo count($prescriptions); ?></div>
@@ -174,10 +174,10 @@ $quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
 
-        <!-- Right Side - Tables Section (3/4 width) -->
+
         <div class="bg-white col-span-3 flex flex-col p-6 h-screen">
             <div class="w-full h-full flex flex-col space-y-4">
-                <!-- My Prescriptions Section (60% height) -->
+
                 <div class="bg-white border border-gray-200 rounded-lg flex flex-col" style="height: 60%;">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
@@ -246,7 +246,7 @@ $quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php endif; ?>
                 </div>
 
-                <!-- Recent Quotations Section (40% height) -->
+
                 <div class="bg-white border border-gray-200 rounded-lg flex flex-col" style="height: 40%;">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">

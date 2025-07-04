@@ -14,7 +14,7 @@ if ($quotation_id <= 0) {
 $database = new Database();
 $conn = $database->getConnection();
 
-// Get quotation details
+
 $stmt = $conn->prepare("
     SELECT q.*, p.user_id, p.delivery_address, p.delivery_time, p.created_at as prescription_date,
            pu.pharmacy_name, pu.address as pharmacy_address, pu.contact_no as pharmacy_contact
@@ -30,7 +30,7 @@ if (!$quotation) {
     redirect('dashboard.php');
 }
 
-// Get quotation items
+
 $stmt = $conn->prepare("SELECT * FROM quotation_items WHERE quotation_id = ?");
 $stmt->execute([$quotation_id]);
 $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,7 +117,7 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-gray-50">
 
 
-    <!-- User Profile - Top Right Corner -->
+
     <div class="absolute top-6 right-6 z-10 flex items-center space-x-3">
         <div class="flex items-center space-x-2">
             <span class="material-icons text-gray-600">account_circle</span>
@@ -128,9 +128,9 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </a>
     </div>
 
-    <!-- Main Container -->
+
     <div class="min-h-screen grid grid-cols-4">
-        <!-- Left Side - Quotation Summary (1/4 width) -->
+
         <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
             <div class="text-center w-full">
                 <div class="flex justify-center mb-8">
@@ -141,14 +141,14 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     From <?php echo htmlspecialchars($quotation['pharmacy_name']); ?>
                 </p>
 
-                <!-- Status -->
+
                 <div class="mb-6">
                     <span class="px-4 py-2 rounded-full text-sm font-medium status-<?php echo $quotation['status']; ?>">
                         <?php echo ucfirst($quotation['status']); ?>
                     </span>
                 </div>
 
-                <!-- Total Amount -->
+
                 <div class="bg-white p-6 rounded-lg border mb-6">
                     <div class="text-xs text-gray-500 mb-2">Total Amount</div>
                     <div class="text-3xl font-bold text-blue-600">
@@ -156,7 +156,7 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
+
                 <?php if ($quotation['status'] == 'pending'): ?>
                 <div class="space-y-3">
                     <a href="accept_quotation.php?id=<?php echo $quotation['id']; ?>"
@@ -174,7 +174,7 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <?php endif; ?>
 
-                <!-- Back Button -->
+
                 <div class="mt-6">
                     <a href="dashboard.php"
                         class="btn block w-full px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium flex items-center justify-center space-x-2">
@@ -183,7 +183,7 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </a>
                 </div>
 
-                <!-- Stats -->
+
                 <div class="grid grid-cols-1 gap-4 mt-8">
                     <div class="bg-white p-4 rounded-lg border">
                         <div class="text-2xl font-bold text-blue-600"><?php echo count($quotation_items); ?></div>
@@ -199,10 +199,9 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
 
-        <!-- Right Side - Details Section (3/4 width) -->
         <div class="bg-white col-span-3 flex flex-col p-6 min-h-screen">
             <div class="w-full h-full flex flex-col space-y-6">
-                <!-- Quotation Items Section -->
+
                 <div class="bg-white border border-gray-200 rounded-lg flex flex-col" style="min-height: 50%;">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
@@ -243,9 +242,9 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <!-- Information Cards Section -->
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Pharmacy Information -->
+
                     <div class="bg-white border border-gray-200 rounded-lg">
                         <div class="p-4 border-b border-gray-200">
                             <h3 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
@@ -283,7 +282,7 @@ $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
 
-                    <!-- Delivery Information -->
+
                     <div class="bg-white border border-gray-200 rounded-lg">
                         <div class="p-4 border-b border-gray-200">
                             <h3 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">

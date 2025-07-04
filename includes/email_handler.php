@@ -1,5 +1,5 @@
 <?php
-// File: includes/email_handler.php
+
 require_once '../config/database.php';
 
 class QuotationEmailHandler {
@@ -11,7 +11,7 @@ class QuotationEmailHandler {
             $database = new Database();
             $conn = $database->getConnection();
             
-            // Get prescription and user details
+           
             $stmt = $conn->prepare("
                 SELECT p.*, u.name as user_name, u.email as user_email, u.contact_no as user_contact
                 FROM prescriptions p 
@@ -25,20 +25,30 @@ class QuotationEmailHandler {
                 throw new Exception("Prescription not found");
             }
             
-            // Check if user has email
+            
             if (empty($prescription['user_email'])) {
                 throw new Exception("User email not found. Please update user profile with email address.");
             }
             
-            // Use session data for pharmacy info (since pharmacies table doesn't exist)
-            $pharmacy = array(
-                'id' => $pharmacy_id,
-                'name' => isset($_SESSION['pharmacy_name']) ? $_SESSION['pharmacy_name'] : 'Our Pharmacy',
-                'address' => 'Please contact pharmacy for address details',
-                'contact_no' => 'Please contact pharmacy for phone number'
-            );
             
-            // Get quotation details
+            $stmt = $conn->prepare("SELECT * FROM pharmacy_users WHERE id = ?");
+            $stmt->execute([$pharmacy_id]);
+            $pharmacy_data = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$pharmacy_data) {
+                throw new Exception("Pharmacy not found");
+            }
+            
+            
+            $pharmacy = array(
+                'id' => $pharmacy_data['id'],
+                'name' => $pharmacy_data['pharmacy_name'],
+                'address' => $pharmacy_data['address'],
+                'contact_no' => $pharmacy_data['contact_no'],
+                'email' => $pharmacy_data['email'],
+                'license_no' => $pharmacy_data['license_no']
+            );
+        
             $stmt = $conn->prepare("SELECT * FROM quotations WHERE prescription_id = ? AND pharmacy_id = ?");
             $stmt->execute([$prescription_id, $pharmacy_id]);
             $quotation = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,18 +57,17 @@ class QuotationEmailHandler {
                 throw new Exception("Quotation not found");
             }
             
-            // Get quotation items
+     
             $stmt = $conn->prepare("SELECT * FROM quotation_items WHERE quotation_id = ?");
             $stmt->execute([$quotation['id']]);
             $quotation_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            // Prepare email content
+      
             $to = $prescription['user_email'];
             $subject = "Quotation Received - PrescriptionSystem";
             $message = $this->generateEmailContent($prescription, $pharmacy, $quotation, $quotation_items);
             $headers = $this->generateHeaders();
-            
-            // Send email
+         
             if (mail($to, $subject, $message, $headers)) {
                 return array('success' => true, 'message' => 'Quotation email sent successfully to ' . $to);
             } else {
@@ -233,8 +242,20 @@ class QuotationEmailHandler {
                     <span class="info-value">' . htmlspecialchars($pharmacy['name']) . '</span>
                 </div>
                 <div class="info-row">
+                    <span class="info-label">Address:</span>
+                    <span class="info-value">' . htmlspecialchars($pharmacy['address']) . '</span>
+                </div>
+                <div class="info-row">
                     <span class="info-label">Contact:</span>
                     <span class="info-value">' . htmlspecialchars($pharmacy['contact_no']) . '</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">' . htmlspecialchars($pharmacy['email']) . '</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">License No:</span>
+                    <span class="info-value">' . htmlspecialchars($pharmacy['license_no']) . '</span>
                 </div>
             </div>
             
@@ -314,7 +335,7 @@ class QuotationEmailHandler {
                "X-Mailer: PHP/" . phpversion();
     }
     
-    // Test email function
+    
     public function testEmail($test_email = "hasinihiru3@gmail.com") {
         $subject = "Test Mail - PrescriptionSystem";
         $message = "
@@ -338,24 +359,4 @@ class QuotationEmailHandler {
     }
 }
 
-// Usage examples:
-/*
-// Send quotation email
-$emailHandler = new QuotationEmailHandler();
-$result = $emailHandler->sendQuotationEmail($prescription_id, $pharmacy_id);
-
-if ($result['success']) {
-    echo "Email sent: " . $result['message'];
-} else {
-    echo "Email failed: " . $result['message'];
-}
-
-// Test email
-$testResult = $emailHandler->testEmail("user@example.com");
-if ($testResult['success']) {
-    echo "Test email sent successfully!";
-} else {
-    echo "Test email failed: " . $testResult['message'];
-}
-*/
 ?>

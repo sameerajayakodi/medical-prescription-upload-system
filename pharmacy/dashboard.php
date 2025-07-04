@@ -137,12 +137,12 @@ $total_revenue = $stmt->fetchColumn() ?: 0;
 </head>
 
 <body class="bg-gray-50">
-    <!-- Website Name - Top Left Corner -->
+
     <div class="absolute top-6 left-6 z-10 flex items-center space-x-2">
         <span class="text-lg font-medium text-gray-900">PrescriptionSystem</span>
     </div>
 
-    <!-- Pharmacy Profile - Top Right Corner -->
+
     <div class="absolute top-6 right-6 z-10 flex items-center space-x-3">
         <div class="flex items-center space-x-2">
             <span class="material-icons text-gray-600">local_pharmacy</span>
@@ -154,9 +154,9 @@ $total_revenue = $stmt->fetchColumn() ?: 0;
         </a>
     </div>
 
-    <!-- Main Container -->
+
     <div class="main-container grid grid-cols-4">
-        <!-- Left Side - Dashboard Overview (1/4 width) -->
+
         <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
             <div class="text-center w-full">
                 <div class="flex justify-center mb-8">
@@ -169,7 +169,7 @@ $total_revenue = $stmt->fetchColumn() ?: 0;
 
 
 
-                <!-- Stats -->
+
                 <div class="grid grid-cols-1 gap-4">
                     <div class="bg-white p-4 rounded-lg border">
                         <div class="text-2xl font-bold text-blue-600"><?php echo $total_quotations; ?></div>
@@ -188,10 +188,10 @@ $total_revenue = $stmt->fetchColumn() ?: 0;
             </div>
         </div>
 
-        <!-- Right Side - Tables Section (3/4 width) -->
+
         <div class="bg-white col-span-3 flex flex-col p-6 h-screen">
             <div class="w-full h-full flex flex-col space-y-4">
-                <!-- Available Prescriptions Section (60% height) -->
+
                 <div class="bg-white  flex flex-col" style="height: 60%;">
                     <div class="p-4 ">
                         <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
@@ -257,7 +257,7 @@ $total_revenue = $stmt->fetchColumn() ?: 0;
                     <?php endif; ?>
                 </div>
 
-                <!-- Recent Quotations Section (40% height) -->
+                ->
                 <div class="bg-white  flex flex-col" style="height: 40%;">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
