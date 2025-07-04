@@ -40,10 +40,10 @@ require_once 'config/database.php';
 </head>
 
 <body class="bg-gray-50">
-    <!-- Split Screen Content -->
+   
     <?php if (!isLoggedIn()): ?>
     <div class="split-section grid grid-cols-1 md:grid-cols-2">
-        <!-- Left Side - For Patients -->
+      
         <div class="bg-white text-gray-700 flex items-center justify-center p-8">
             <div class="text-center max-w-md">
                 <div class="flex justify-center mb-8">
@@ -67,7 +67,7 @@ require_once 'config/database.php';
             </div>
         </div>
 
-        <!-- Right Side - For Pharmacies -->
+       
         <div class="bg-gray-100 text-gray-700 flex items-center justify-center p-8">
             <div class="text-center max-w-md">
                 <div class="flex justify-center mb-8">
@@ -92,7 +92,7 @@ require_once 'config/database.php';
         </div>
     </div>
     <?php else: ?>
-    <!-- Welcome Back Screen -->
+
     <div class="split-section flex items-center justify-center bg-gray-100">
         <div class="text-center max-w-md bg-white p-12 rounded-lg shadow-lg">
             <div class="flex justify-center mb-6">
